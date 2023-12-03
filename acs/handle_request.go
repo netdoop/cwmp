@@ -78,8 +78,8 @@ func (s *AcsServer) handleInform(ctx context.Context, inform *proto.Inform) erro
 		device = s.deviceStore.CreateDeviceWithInform(schema, inform.DeviceID.OUI, inform.DeviceID.ProductClass, inform.DeviceID.SerialNumber, inform)
 		device.PushMethodCall(time.Now(), "GetRPCMethods", nil)
 	} else {
-		device.UpdateParameterValues(values)
 		lastOnlineStatus = device.GetOnlineStatus()
+		device.HandleInform(inform)
 	}
 	device.HandleAlive(currentTime, lastOnlineStatus)
 

@@ -14,16 +14,21 @@ type DataModel interface {
 
 type Product interface {
 	GetID() uint
+	GetSchema() string
 	GetDataModel() DataModel
 }
 
 type Device interface {
-	GetID() string
+	GetID() uint
+	GetSchema() string
 	GetOUI() string
 	GetProductClass() string
 	GetSerialNumber() string
 	GetProduct() Product
 
+	SaveUpdated(updateColumns []string) error
+
+	HandleInform(inform *proto.Inform) error
 	GetOnlineStatus() bool
 	HandleAlive(t time.Time, lastOnlineStatus bool)
 
