@@ -9,6 +9,7 @@ import (
 type DataModel interface {
 	Reload()
 	UpsertParameter(name string, typ *string, writable *bool, description *string, defaultValue *string) error
+	GetParameterType(name string) string
 }
 
 type Product interface {
@@ -29,9 +30,12 @@ type Device interface {
 	UpdateMethods(methods []string) error
 	IsMethodSupported(method string) bool
 
+	GetNextMethodCall() MethodCall
 	GetMethodCall(commandKey string) MethodCall
 	PushMethodCall(t time.Time, methodName string, values map[string]any) (MethodCall, error)
+	UpdateMethodCallRequestSend(commandKey string) error
 	UpdateMethodCallResponse(requestId string, values map[string]any, faultÇode int, faultString string)
+	UpdateMethodCallUnknow(commandKey string) error
 
 	UpdateTransferLogComplete(ts int64, startTime time.Time, completeTime time.Time) error
 	UpdateTransferLogFault(ts int64, startTime time.Time, completeTime time.Time, faultCode int, faultString string) error
@@ -40,7 +44,9 @@ type Device interface {
 	UpdateParameterWritables(values map[string]bool)
 	UpdateParameterNotifications(values map[string]int)
 
-	GetDeviceParameterNames(parameterPath string, nextLevel bool) error
+	SyncDeviceParameterNames(parameterPath string, nextLevel bool) error
+
+	GetParameterNames(path string, nextLevel bool) []string
 	GetParameterValue(name string) (string, error)
 	MustGetParameterValue(name string) string
 	UpdateParameterValues(values map[string]string) error
@@ -49,6 +55,10 @@ type Device interface {
 }
 
 type MethodCall interface {
+	MethodName() string
+	CommandKey() string
+	RequestValues() map[string]string
+	GetRequestValue(name string) string
 }
 
 type ProductStore interface {

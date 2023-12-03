@@ -84,7 +84,7 @@ func (s *AcsServer) handleInform(ctx context.Context, inform *proto.Inform) erro
 	device.HandleAlive(currentTime, lastOnlineStatus)
 
 	if needSync {
-		device.GetDeviceParameterNames("Device.", false)
+		device.SyncDeviceParameterNames("Device.", false)
 	}
 
 	if !periodicOnly {
