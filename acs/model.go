@@ -13,18 +13,18 @@ type DataModel interface {
 }
 
 type Product interface {
-	ID() string
-	DataModel() DataModel
+	GetID() uint
+	GetDataModel() DataModel
 }
 
 type Device interface {
-	ID() string
-	OUI() string
-	ProductClass() string
-	SerialNumber() string
-	Product() Product
+	GetID() string
+	GetOUI() string
+	GetProductClass() string
+	GetSerialNumber() string
+	GetProduct() Product
 
-	OnlineStatus() bool
+	GetOnlineStatus() bool
 	HandleAlive(t time.Time, lastOnlineStatus bool)
 
 	UpdateMethods(methods []string) error
@@ -55,9 +55,9 @@ type Device interface {
 }
 
 type MethodCall interface {
-	MethodName() string
-	CommandKey() string
-	RequestValues() map[string]string
+	GetMethodName() string
+	GetCommandKey() string
+	GetRequestValues() map[string]string
 	GetRequestValue(name string) string
 }
 

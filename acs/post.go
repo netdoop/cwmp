@@ -86,7 +86,7 @@ func (s *AcsServer) HandlePost(c echo.Context) error {
 		msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 		return s.responseXML(c, sess, msg2)
 	}
-	product := device.Product()
+	product := device.GetProduct()
 	if product == nil {
 		s.logger.Error("unknow product")
 		msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
@@ -208,13 +208,13 @@ func (s *AcsServer) HandlePost(c echo.Context) error {
 }
 
 func (s *AcsServer) getNextMessage(ns proto.SoapNamespace, device Device) *proto.SoapEnvelope {
-	product := device.Product()
-	dm := product.DataModel()
+	product := device.GetProduct()
+	dm := product.GetDataModel()
 	var body any = nil
 	if call := device.GetNextMethodCall(); call != nil {
-		commandKey := call.CommandKey()
-		methodName := call.MethodName()
-		values := call.RequestValues()
+		commandKey := call.GetCommandKey()
+		methodName := call.GetMethodName()
+		values := call.GetRequestValues()
 		if values != nil && len(values) > 0 {
 			s.logger.Debug("device method",
 				zap.String("method", methodName),

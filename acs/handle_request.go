@@ -79,7 +79,7 @@ func (s *AcsServer) handleInform(ctx context.Context, inform *proto.Inform) erro
 		device.PushMethodCall(time.Now(), "GetRPCMethods", nil)
 	} else {
 		device.UpdateParameterValues(values)
-		lastOnlineStatus = device.OnlineStatus()
+		lastOnlineStatus = device.GetOnlineStatus()
 	}
 	device.HandleAlive(currentTime, lastOnlineStatus)
 
@@ -218,10 +218,10 @@ func (s *AcsServer) handleGetParameterValuesResponse(ctx context.Context, device
 	device.UpdateMethodCallResponse(id, jsontype.StringMapToTags(values), 0, "")
 	device.UpdateParameterValues(values)
 
-	if product := device.Product(); product != nil {
-		if dm := product.DataModel(); dm != nil {
+	if product := device.GetProduct(); product != nil {
+		if dm := product.GetDataModel(); dm != nil {
 			needReload := false
-			if !GetState("sync_datamodel_param_type", fmt.Sprintf("%v", product.ID())) {
+			if !GetState("sync_datamodel_param_type", fmt.Sprintf("%v", product.GetID())) {
 				for _, v := range resp.ParameterList.ParameterValueStructs {
 					name := v.Name.Text
 					var typ *string
@@ -235,7 +235,7 @@ func (s *AcsServer) handleGetParameterValuesResponse(ctx context.Context, device
 				}
 			}
 			if needReload {
-				SetState("sync_datamodel_param_type", fmt.Sprintf("%v", product.ID()), true)
+				SetState("sync_datamodel_param_type", fmt.Sprintf("%v", product.GetID()), true)
 				go dm.Reload()
 			}
 		}
@@ -276,10 +276,10 @@ func (s *AcsServer) handleGetParameterNamesResponse(ctx context.Context, device 
 		device.PushMethodCall(time.Now(), "GetParameterValues", values)
 	}
 
-	if product := device.Product(); product != nil {
-		if dm := product.DataModel(); dm != nil {
+	if product := device.GetProduct(); product != nil {
+		if dm := product.GetDataModel(); dm != nil {
 			needReload := false
-			if !GetState("sync_datamodel_param_writable", fmt.Sprintf("%v", product.ID())) {
+			if !GetState("sync_datamodel_param_writable", fmt.Sprintf("%v", product.GetID())) {
 				for _, v := range resp.ParameterList.ParameterInfoStructs {
 					name := v.Name
 					var writable *bool
@@ -289,7 +289,7 @@ func (s *AcsServer) handleGetParameterNamesResponse(ctx context.Context, device 
 				}
 			}
 			if needReload {
-				SetState("sync_datamodel_param_writable", fmt.Sprintf("%v", product.ID()), true)
+				SetState("sync_datamodel_param_writable", fmt.Sprintf("%v", product.GetID()), true)
 				go dm.Reload()
 			}
 		}
