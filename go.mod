@@ -3,6 +3,7 @@ module github.com/netdoop/cwmp
 go 1.21.4
 
 require (
+	github.com/gorilla/sessions v1.2.1
 	github.com/heypkg/s3 v0.1.3-dev
 	github.com/heypkg/store v0.0.0-20231130021917-c2eef1da462c
 	github.com/labstack/echo/v4 v4.11.3
@@ -15,7 +16,6 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
-	github.com/gorilla/sessions v1.2.1 // indirect
 	golang.org/x/time v0.3.0 // indirect
 )
 
