@@ -42,7 +42,7 @@ func (s *AcsServer) HandlePost(c echo.Context) error {
 	if msg != nil {
 		if msg.Body.Inform != nil {
 			// logger.Warn("debug", zap.String("inform", string(body)))
-			if err := s.handleInform(ctx, msg.Body.Inform); err != nil {
+			if err := s.handler.HandleInform(ctx, msg.Body.Inform); err != nil {
 				err = errors.Wrap(err, "handle Inform")
 				msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 				s.logger.Error("handle post", zap.Error(err))
@@ -95,7 +95,7 @@ func (s *AcsServer) HandlePost(c echo.Context) error {
 
 	if msg != nil {
 		if msg.Body.TransferComplete != nil {
-			if err := s.handleTransferComplete(ctx, device, msg.Body.TransferComplete); err != nil {
+			if err := s.handler.HandleTransferComplete(ctx, device, msg.Body.TransferComplete); err != nil {
 				err = errors.Wrap(err, "handle TransferComplete")
 				s.logger.Error("handle post", zap.Error(err))
 				msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
@@ -105,7 +105,7 @@ func (s *AcsServer) HandlePost(c echo.Context) error {
 			return s.responseXML(c, sess, msg2)
 		}
 		if msg.Body.AutonomousTransferComplete != nil {
-			if err := s.handleAutonomousTransferComplete(ctx, device, msg.Body.AutonomousTransferComplete); err != nil {
+			if err := s.handler.HandleAutonomousTransferComplete(ctx, device, msg.Body.AutonomousTransferComplete); err != nil {
 				err = errors.Wrap(err, "handle AutonomousTransferComplete")
 				s.logger.Error("handle post", zap.Error(err))
 				msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
@@ -114,77 +114,77 @@ func (s *AcsServer) HandlePost(c echo.Context) error {
 			msg2 := proto.CreateEnvelope(msg.Header.ID.Text, msg.NS, &proto.AutonomousTransferCompleteResponse{})
 			return s.responseXML(c, sess, msg2)
 		}
-		if err2 := s.handleFault(device, msg.Header.ID.Text, msg.Body.Fault); err2 != nil {
+		if err2 := s.handler.HandleFault(device, msg.Header.ID.Text, msg.Body.Fault); err2 != nil {
 			s.logger.Error("handle SoapFault", zap.Error(err2))
 		}
 
-		if err := s.handleGetRPCMethodsResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetRPCMethodsResponse); err != nil {
+		if err := s.handler.HandleGetRPCMethodsResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetRPCMethodsResponse); err != nil {
 			err = errors.Wrap(err, "handle GetRPCMethodsResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleGetParameterValuesResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetParameterValuesResponse); err != nil {
+		if err := s.handler.HandleGetParameterValuesResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetParameterValuesResponse); err != nil {
 			err = errors.Wrap(err, "handle GetParameterValuesResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleSetParameterValuesResponse(ctx, device, msg.Header.ID.Text, msg.Body.SetParameterValuesResponse); err != nil {
+		if err := s.handler.HandleSetParameterValuesResponse(ctx, device, msg.Header.ID.Text, msg.Body.SetParameterValuesResponse); err != nil {
 			err = errors.Wrap(err, "handle SetParameterValuesResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleGetParameterNamesResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetParameterNamesResponse); err != nil {
+		if err := s.handler.HandleGetParameterNamesResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetParameterNamesResponse); err != nil {
 			err = errors.Wrap(err, "handle GetParameterNamesResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleSetParameterAttributesResponse(ctx, device, msg.Header.ID.Text, msg.Body.SetParameterAttributesResponse); err != nil {
+		if err := s.handler.HandleSetParameterAttributesResponse(ctx, device, msg.Header.ID.Text, msg.Body.SetParameterAttributesResponse); err != nil {
 			err = errors.Wrap(err, "handle SetParameterAttributesResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleGetParameterAttributesResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetParameterAttributesResponse); err != nil {
+		if err := s.handler.HandleGetParameterAttributesResponse(ctx, device, msg.Header.ID.Text, msg.Body.GetParameterAttributesResponse); err != nil {
 			err = errors.Wrap(err, "handle GetParameterAttributesResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleAddObjectResponse(ctx, device, msg.Header.ID.Text, msg.Body.AddObjectResponse); err != nil {
+		if err := s.handler.HandleAddObjectResponse(ctx, device, msg.Header.ID.Text, msg.Body.AddObjectResponse); err != nil {
 			err = errors.Wrap(err, "handle AddObjectResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleDeleteObjectResponse(ctx, device, msg.Header.ID.Text, msg.Body.DeleteObjectResponse); err != nil {
+		if err := s.handler.HandleDeleteObjectResponse(ctx, device, msg.Header.ID.Text, msg.Body.DeleteObjectResponse); err != nil {
 			err = errors.Wrap(err, "handle DeleteObjectResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleDownloadResponse(ctx, device, msg.Header.ID.Text, msg.Body.DownloadResponse); err != nil {
+		if err := s.handler.HandleDownloadResponse(ctx, device, msg.Header.ID.Text, msg.Body.DownloadResponse); err != nil {
 			err = errors.Wrap(err, "handle DownloadResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleUploadResponse(ctx, device, msg.Header.ID.Text, msg.Body.UploadResponse); err != nil {
+		if err := s.handler.HandleUploadResponse(ctx, device, msg.Header.ID.Text, msg.Body.UploadResponse); err != nil {
 			err = errors.Wrap(err, "handle UploadResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleRebootResponse(ctx, device, msg.Header.ID.Text, msg.Body.RebootResponse); err != nil {
+		if err := s.handler.HandleRebootResponse(ctx, device, msg.Header.ID.Text, msg.Body.RebootResponse); err != nil {
 			err = errors.Wrap(err, "handle RebootResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
 			return s.responseXML(c, sess, msg2)
 		}
-		if err := s.handleFactoryResetResponse(ctx, device, msg.Header.ID.Text, msg.Body.FactoryResetResponse); err != nil {
+		if err := s.handler.HandleFactoryResetResponse(ctx, device, msg.Header.ID.Text, msg.Body.FactoryResetResponse); err != nil {
 			err = errors.Wrap(err, "handle FactoryResetResponse")
 			s.logger.Error("handle post", zap.Error(err))
 			msg2 := proto.CreateEnvelopeFault(msg.Header.ID.Text, msg.NS, proto.ACSFaultCodeInternalError, err)
@@ -244,8 +244,6 @@ func (s *AcsServer) getNextMessage(ns proto.SoapNamespace, device Device) *proto
 				for k := range values {
 					params.Strings = append(params.Strings, k)
 				}
-			} else {
-				params.Strings = device.GetParameterNames("", false)
 			}
 			body = &proto.GetParameterValues{
 				ParameterNames: params,
@@ -268,13 +266,13 @@ func (s *AcsServer) getNextMessage(ns proto.SoapNamespace, device Device) *proto
 			tmp.ParameterList.ParameterValueStructs = params
 			body = tmp
 		case "GetParameterAttributes":
-			params := proto.ParameterNames{}
+			params := proto.ParameterNames{
+				Strings: []string{},
+			}
 			if values != nil && len(values) > 0 {
 				for k := range values {
 					params.Strings = append(params.Strings, k)
 				}
-			} else {
-				params.Strings = device.GetParameterNames("", false)
 			}
 			body = &proto.GetParameterAttributes{
 				ParameterNames: params,
@@ -374,7 +372,7 @@ func (s *AcsServer) getDeviceBySession(sess *sessions.Session) Device {
 	oui := cast.ToString(sess.Values["OUI"])
 	productClass := cast.ToString(sess.Values["ProductClass"])
 	serialNumber := cast.ToString(sess.Values["SerialNumber"])
-	return s.deviceStore.GetDevice("", oui, productClass, serialNumber)
+	return s.handler.GetDevice("", oui, productClass, serialNumber)
 }
 
 func (s *AcsServer) responseXML(c echo.Context, sess *sessions.Session, i any) error {

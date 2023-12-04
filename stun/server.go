@@ -6,10 +6,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/agan83/netdoop/utils"
-
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"gortc.io/stun"
 )
@@ -24,22 +21,17 @@ type STUNServer interface {
 
 type stunServer struct {
 	logger       *zap.Logger
-	env          *viper.Viper
 	conn         net.PacketConn
 	shutdown     bool
 	shutdownCh   chan struct{}
 	shutdownLock sync.Mutex
 }
 
-func NewSTUNServer() STUNServer {
+func NewSTUNServer(network string, addr string) STUNServer {
 	s := &stunServer{
 		shutdownCh: make(chan struct{}),
 	}
-	s.logger = utils.GetLogger().Named("stun")
-	s.env = utils.GetEnv()
-
-	network := s.env.GetString("stun_network")
-	addr := s.env.GetString("stun_addr")
+	s.logger = zap.L().Named("stun")
 	conn, err := net.ListenPacket(network, addr)
 	if err != nil {
 		s.logger.Error("listen packet", zap.Error(err))

@@ -13,33 +13,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *AcsServer) SendConnectRequest(device Device) error {
-	url := device.MustGetParameterValue("Device.ManagementServer.ConnectionRequestURL")
-	username := device.MustGetParameterValue("Device.ManagementServer.ConnectionRequestUsername")
-	password := device.MustGetParameterValue("Device.ManagementServer.ConnectionRequestPassword")
-	udpConnectionRequestAddress := device.MustGetParameterValue("Device.ManagementServer.UDPConnectionRequestAddress")
-	natDetected := device.MustGetParameterValue("Device.ManagementServer.NATDetected")
-
-	if url != "" {
-		ok, err := sendHttpConnetionRequest(url, username, password)
-		if err != nil {
-			return errors.Wrap(err, "send http connect request")
-		}
-		if ok {
-			return nil
-		}
-	}
-
-	if natDetected == "1" && udpConnectionRequestAddress != "" {
-		for i := 0; i < 3; i++ {
-			sendUDPConnectionRequest(udpConnectionRequestAddress, username, password)
-			time.Sleep(time.Second)
-		}
-	}
-	return nil
-}
-
-func sendHttpConnetionRequest(url string, username string, password string) (bool, error) {
+func SendHttpConnetionRequest(url string, username string, password string) (bool, error) {
 	if url == "" {
 		return false, nil
 	}
@@ -80,7 +54,7 @@ func sendHttpConnetionRequest(url string, username string, password string) (boo
 	return false, errors.Errorf("connection request failed. Status code: %v", resp.StatusCode)
 }
 
-func sendUDPConnectionRequest(addr string, username string, password string) (bool, error) {
+func SendUDPConnectionRequest(addr string, username string, password string) (bool, error) {
 	if addr == "" {
 		return false, nil
 	}

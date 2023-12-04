@@ -4,8 +4,7 @@ go 1.21.4
 
 require (
 	github.com/gorilla/sessions v1.2.1
-	github.com/heypkg/s3 v0.1.3-dev
-	github.com/heypkg/store v0.0.0-20231130021917-c2eef1da462c
+	github.com/heypkg/s3 v0.2.3-dev
 	github.com/labstack/echo/v4 v4.11.3
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cast v1.6.0
@@ -16,6 +15,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/heypkg/store v0.1.0-dev // indirect
 	golang.org/x/time v0.3.0 // indirect
 )
 
@@ -46,4 +46,5 @@ require (
 	golang.org/x/text v0.13.0 // indirect
 	gorm.io/driver/mysql v1.5.2 // indirect
 	gorm.io/gorm v1.25.5 // indirect
+	gortc.io/stun v1.23.0
 )

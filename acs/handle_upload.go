@@ -61,7 +61,7 @@ func (s *AcsServer) HandleUpload(c echo.Context) error {
 		return c.JSON(http.StatusOK, nil)
 	}
 	schema := ""
-	device := s.GetDevice(schema, oui, "", serialNumber)
+	device := s.handler.GetDevice(schema, oui, "", serialNumber)
 	if device == nil {
 		return echo.NewHTTPError(http.StatusBadRequest, errors.New("invalid device").Error())
 	}
@@ -96,61 +96,59 @@ func (s *AcsServer) HandleUpload(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, errors.Wrap(err, "put object").Error())
 		}
 
-		if s.pmHandler != nil {
-			go func() {
-				src := bytes.NewReader(buffer.Bytes())
-				collec := &pm.MeasCollecFile{}
-				decoder := xml.NewDecoder(src)
-				if err := decoder.Decode(collec); err != nil {
-					logger.Error("decode PmFile", zap.Error(err))
-					return
-				}
-				// logger.Warn("debug", zap.Any("collec", collec))
+		go func() {
+			src := bytes.NewReader(buffer.Bytes())
+			collec := &pm.MeasCollecFile{}
+			decoder := xml.NewDecoder(src)
+			if err := decoder.Decode(collec); err != nil {
+				logger.Error("decode PmFile", zap.Error(err))
+				return
+			}
+			// logger.Warn("debug", zap.Any("collec", collec))
 
-				types := map[int]string{}
-				for _, data := range collec.MeasData {
-					for _, info := range data.MeasInfo {
-						for _, typ := range info.MeasTypes {
-							types[typ.P] = typ.Value
+			types := map[int]string{}
+			for _, data := range collec.MeasData {
+				for _, info := range data.MeasInfo {
+					for _, typ := range info.MeasTypes {
+						types[typ.P] = typ.Value
+					}
+				}
+			}
+
+			values := map[string]any{}
+			for _, data := range collec.MeasData {
+				for _, info := range data.MeasInfo {
+					for _, r := range info.MeasValue.R {
+						if typ, ok := types[r.P]; ok {
+							tmp := r.Value
+							values[typ] = tmp
 						}
 					}
 				}
+			}
+			s.handler.HandleMesureValues(device, filename, values)
+			// for typ, value := range values {
+			// 	if meas := omc.GetKPIMeasure(schema, "enb", typ); meas != nil && meas.Enable {
+			// 		if v := cast.ToFloat64(value); v != 0 {
+			// 			omc.InsertDeviePerformanceValue(db, device, meas.MeasTypeID, filename, v, nil)
+			// 		}
+			// 	}
+			// }
 
-				values := map[string]any{}
-				for _, data := range collec.MeasData {
-					for _, info := range data.MeasInfo {
-						for _, r := range info.MeasValue.R {
-							if typ, ok := types[r.P]; ok {
-								tmp := r.Value
-								values[typ] = tmp
-							}
-						}
-					}
-				}
-				s.pmHandler.HandleMesureValues(values)
-				// for typ, value := range values {
-				// 	if meas := omc.GetKPIMeasure(schema, "enb", typ); meas != nil && meas.Enable {
-				// 		if v := cast.ToFloat64(value); v != 0 {
-				// 			omc.InsertDeviePerformanceValue(db, device, meas.MeasTypeID, filename, v, nil)
-				// 		}
-				// 	}
-				// }
-
-				// measList := omc.GetKPIMeasuresBySet(schema, "enb", "Customize")
-				// for _, meas := range measList {
-				// 	if meas.Enable && meas.FormulaExpression != nil {
-				// 		if result, err := meas.FormulaExpression.Evaluate(values); err != nil {
-				// 			logger.Error("evaluate", zap.String("formula", meas.Formula))
-				// 		} else {
-				// 			v := fmt.Sprintf("%v", result)
-				// 			if v != "NaN" {
-				// 				omc.InsertDeviePerformanceValue(db, device, meas.MeasTypeID, filename, cast.ToFloat64(v), nil)
-				// 			}
-				// 		}
-				// 	}
-				// }
-			}()
-		}
+			// measList := omc.GetKPIMeasuresBySet(schema, "enb", "Customize")
+			// for _, meas := range measList {
+			// 	if meas.Enable && meas.FormulaExpression != nil {
+			// 		if result, err := meas.FormulaExpression.Evaluate(values); err != nil {
+			// 			logger.Error("evaluate", zap.String("formula", meas.Formula))
+			// 		} else {
+			// 			v := fmt.Sprintf("%v", result)
+			// 			if v != "NaN" {
+			// 				omc.InsertDeviePerformanceValue(db, device, meas.MeasTypeID, filename, cast.ToFloat64(v), nil)
+			// 			}
+			// 		}
+			// 	}
+			// }
+		}()
 
 	}
 

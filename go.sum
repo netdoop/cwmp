@@ -20,10 +20,10 @@ github.com/gorilla/securecookie v1.1.1 h1:miw7JPhV+b/lAHSXz4qd/nN9jRiAFV5FwjeKyC
 github.com/gorilla/securecookie v1.1.1/go.mod h1:ra0sb63/xPlUeL+yeDciTfxMRAA+MP+HVt/4epWDjd4=
 github.com/gorilla/sessions v1.2.1 h1:DHd3rPN5lE3Ts3D8rKkQ8x/0kqfeNmBAaiSi+o7FsgI=
 github.com/gorilla/sessions v1.2.1/go.mod h1:dk2InVEVJ0sfLlnXv9EAgkf6ecYs/i80K/zI+bUmuGM=
-github.com/heypkg/s3 v0.1.3-dev h1:HhiMPimVPUwFruoavUKoh6xuEGNOEEZDJO4eYG88VYU=
-github.com/heypkg/s3 v0.1.3-dev/go.mod h1:y/HH9eUY8EI7TQY9z0k9OhvSg5e85ccigP9oazf9rW8=
-github.com/heypkg/store v0.0.0-20231130021917-c2eef1da462c h1:PYMPbUjUg8G5/w5+UzxIV5gPog80mmLQvyoKSsBglNQ=
-github.com/heypkg/store v0.0.0-20231130021917-c2eef1da462c/go.mod h1:WDMEuopEx/23ED14fJqBYA+WvUvYskMKGn3rwXZykx4=
+github.com/heypkg/s3 v0.2.3-dev h1:wONJVM/G3LRvaTxk5BVLs4O5I3GEzwOGWY9YbwQDZ80=
+github.com/heypkg/s3 v0.2.3-dev/go.mod h1:5KXobuv4TZ7tBRCBBxfQXecYbUZtXYwxVatAX0W+PEE=
+github.com/heypkg/store v0.1.0-dev h1:PgUQT1ex9NO/cdZxFrh6pyfwj3QDzu6DafGkhYRMhgk=
+github.com/heypkg/store v0.1.0-dev/go.mod h1:WDMEuopEx/23ED14fJqBYA+WvUvYskMKGn3rwXZykx4=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
@@ -139,3 +139,5 @@ gorm.io/driver/mysql v1.5.2/go.mod h1:pQLhh1Ut/WUAySdTHwBpBv6+JKcj+ua4ZFx1QQTBzb
 gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55/go.mod h1:L4uxeKpfBml98NYqVqwAdmV1a2nBtAec/cf3fpucW/k=
 gorm.io/gorm v1.25.5 h1:zR9lOiiYf09VNh5Q1gphfyia1JpiClIWG9hQaxB/mls=
 gorm.io/gorm v1.25.5/go.mod h1:hbnx/Oo0ChWMn1BIhpy1oYozzpM15i4YPuHDmfYtwg8=
+gortc.io/stun v1.23.0 h1:CpRQFjakCZMwVKTwInKbcCzlBklj62LGzD3NPdFyGrE=
+gortc.io/stun v1.23.0/go.mod h1:XD5lpONVyjvV3BgOyJFNo0iv6R2oZB4L+weMqxts+zg=
